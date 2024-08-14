@@ -6,8 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Talabat.Core.Module;
+using Talabat.Core.Module.Product;
 
-namespace Talabat.Repository.Data.DataContext
+namespace Talabat.Repository._Data.DataContext
 {
     public class StoreContext : DbContext
     {
@@ -21,8 +22,8 @@ namespace Talabat.Repository.Data.DataContext
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-       public DbSet<Products> products { get; set; }
-       public DbSet<ProductBrand> productBrands { get; set; }
-       public DbSet<ProductCategory> productCategories { get; set; }
+        public DbSet<Products> products { get; set; }
+        public DbSet<ProductBrand> productBrands { get; set; }
+        public DbSet<ProductCategory> productCategories { get; set; }
     }
 }

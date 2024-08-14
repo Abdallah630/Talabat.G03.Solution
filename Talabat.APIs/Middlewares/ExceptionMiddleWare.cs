@@ -16,7 +16,7 @@ namespace Talabat.APIs.MiddleWares
 			_webHostEnvironment = webHostEnvironment;
 		}
 
-		public async Task InvokAsync(HttpContext httpContext)
+		public async Task InvokeAsync(HttpContext httpContext)
 		{
 			// Take an Action with th request 
 			

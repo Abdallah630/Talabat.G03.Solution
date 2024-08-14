@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dto;
 using Talabat.APIs.Helper;
 using Talabat.Core.Module;
+using Talabat.Core.Module.Product;
 using Talabat.Core.ProductSpecification;
 using Talabat.Core.Repositories.Contract;
 
 namespace Talabat.APIs.Controllers
 {
 
-	public class ProductController : BaseApiController
+    public class ProductController : BaseApiController
 	{
 		private readonly IGenericRepository<Products> _productRepo;
 		private readonly IMapper _mapper;
@@ -19,6 +22,20 @@ namespace Talabat.APIs.Controllers
 			_productRepo = productRepo;
 			_mapper = mapper;
 		}
+
+		
+		
+		[Authorize]
+		[HttpGet]
+		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
+		{
+			var spec = new ProductWithBrandAndCategorySpecification();
+			var products = await _productRepo.GetAllWithSpecAsync(spec);
+			if(products is null)
+				return NotFound();
+			return Ok(_mapper.Map<IEnumerable<Products>,IEnumerable<ProductToReturnDto>>(products));
+		}
+
 		[HttpGet("{id}")]
 		public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
 		{
@@ -29,14 +46,5 @@ namespace Talabat.APIs.Controllers
 			return Ok(_mapper.Map<Products,ProductToReturnDto>(product));
 		}
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
-		{
-			var spec = new ProductWithBrandAndCategorySpecification();
-			var products = await _productRepo.GetAllWithSpecAsync(spec);
-			if(products is null)
-				return NotFound();
-			return Ok(_mapper.Map<IEnumerable<Products>,IEnumerable<ProductToReturnDto>>(products));
-		}
 	}
 }

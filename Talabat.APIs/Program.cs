@@ -1,13 +1,25 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
+using System.Text;
 using Talabat.APIs.Error;
 using Talabat.APIs.Helper;
 using Talabat.APIs.MiddleWares;
 using Talabat.Core.Module;
+using Talabat.Core.Module.Basket;
+using Talabat.Core.Module.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Service.Contract;
-using Talabat.Repository.Data.DataContext;
-using Talabat.Repository.Data.DataSeeding;
+using Talabat.Repository._Data.DataContext;
+using Talabat.Repository._Data.DataSeeding;
+using Talabat.Repository._Identity;
+using Talabat.Repository._Identity.DataSeed;
+using Talabat.Repository.GenericRepository;
+using Talabat.Repository.Repositories.BasketRepository;
+using Talabat.Service.AuthService;
 
 namespace Talabat.APIs
 {
@@ -28,9 +40,35 @@ namespace Talabat.APIs
 			{
 				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
+			builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+			{
+				options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+			});
 
-			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-			builder.Services.AddAutoMapper(typeof(MappingProfile));
+			builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+			builder.Services.AddScoped<IConnectionMultiplexer>(serverProvider =>
+			{
+				var connection = builder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connection);
+			});
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer(options =>
+			{
+				options.TokenValidationParameters = new TokenValidationParameters
+				{
+					ValidateIssuer = true,
+					ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+					ValidateAudience = true,
+					ValidAudience = builder.Configuration["JWT:ValidAudience"],
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:AuthKey"])),
+					ValidateLifetime = true,
+					ClockSkew =TimeSpan.Zero,
+				};
+			});
 			builder.Services.Configure<ApiBehaviorOptions>(options =>
 			{
 				options.InvalidModelStateResponseFactory = (actionContext) =>
@@ -47,6 +85,10 @@ namespace Talabat.APIs
 				};
 				
 			});
+			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+			builder.Services.AddAutoMapper(typeof(MappingProfile));
+			builder.Services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+			builder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
 			#endregion
 			var app = builder.Build();
 
@@ -54,11 +96,15 @@ namespace Talabat.APIs
 			using var scope = app.Services.CreateScope();
 			var services = scope.ServiceProvider;
 			var _dbContext = services.GetRequiredService<StoreContext>();
+			var _identityDbContext = services.GetRequiredService<ApplicationIdentityDbContext>();
 			var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 			try
 			{
 				await _dbContext.Database.MigrateAsync();
 				await StoreContextSeed.SeedAsync(_dbContext);
+				await _identityDbContext.Database.MigrateAsync();
+				var _userManger = services.GetRequiredService<UserManager<ApplicationUser>>();
+				await ApplicationIdentityDataSeed.SeedUserAsync(_userManger);
 			}
 
 			catch (Exception ex)
@@ -77,7 +123,7 @@ namespace Talabat.APIs
 			}
 
 			app.UseHttpsRedirection();
-
+			app.UseAuthentication();
 			app.UseAuthorization();
 			app.UseStaticFiles();
 			app.UseMiddleware<ExceptionMiddleWare>();

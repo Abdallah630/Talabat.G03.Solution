@@ -2,10 +2,11 @@
 using AutoMapper.Execution;
 using Talabat.APIs.Dto;
 using Talabat.Core.Module;
+using Talabat.Core.Module.Product;
 
 namespace Talabat.APIs.Helper
 {
-	public class ProductResolverPrecutUrl : IValueResolver<Products, ProductToReturnDto, string>
+    public class ProductResolverPrecutUrl : IValueResolver<Products, ProductToReturnDto, string>
 	{
 		public string Resolve(Products source, ProductToReturnDto destination, string destMember, ResolutionContext context)
 		{
