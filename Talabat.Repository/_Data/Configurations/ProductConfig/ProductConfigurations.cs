@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using Talabat.Core.Module;
 using Talabat.Core.Module.Product;
 
-namespace Talabat.Repository._Data.Configurations.Products
+namespace Talabat.Repository._Data.Configurations.ProductConfig
 {
+
     internal class ProductConfigurations : IEntityTypeConfiguration<Products>
     {
         public void Configure(EntityTypeBuilder<Products> builder)

@@ -22,6 +22,13 @@ namespace Talabat.Repository._Data.Configurations.Orders
 				);
 			builder.Property(order => order.SubTotal)
 				.HasColumnType("decimal(12,2)");
+
+			builder.HasOne(order => order.delivery)
+				.WithMany()
+				.OnDelete(DeleteBehavior.SetNull);
+			builder.HasMany(order => order.order)
+				.WithOne()
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

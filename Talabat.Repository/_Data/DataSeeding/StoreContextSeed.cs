@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Talabat.Core.Module;
+using Talabat.Core.Module.OrderAggregate;
 using Talabat.Core.Module.Product;
 using Talabat.Repository._Data.DataContext;
 
@@ -18,7 +19,7 @@ namespace Talabat.Repository._Data.DataSeeding
 
             if (context.productBrands.Count() == 0)
             {
-                var brandsData = File.ReadAllText("../Talabat.Repository/Data/DataSeeding/brands.json");
+                var brandsData = File.ReadAllText("../Talabat.Repository/_Data/DataSeeding/brands.json");
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 
                 if (brands?.Count() > 0)
@@ -33,7 +34,7 @@ namespace Talabat.Repository._Data.DataSeeding
 
             if (context.productCategories.Count() == 0)
             {
-                var categoryData = File.ReadAllText("../Talabat.Repository/Data/DataSeeding/categories.json");
+                var categoryData = File.ReadAllText("../Talabat.Repository/_Data/DataSeeding/categories.json");
                 var categories = JsonSerializer.Deserialize<List<ProductCategory>>(categoryData);
 
                 if (categories?.Count > 0)
@@ -48,7 +49,7 @@ namespace Talabat.Repository._Data.DataSeeding
 
             if (context.products.Count() == 0)
             {
-                var productData = File.ReadAllText("../Talabat.Repository/Data/DataSeeding/products.json");
+                var productData = File.ReadAllText("../Talabat.Repository/_Data/DataSeeding/products.json");
                 var products = JsonSerializer.Deserialize<List<Products>>(productData);
 
                 if (products?.Count() > 0)
@@ -61,6 +62,21 @@ namespace Talabat.Repository._Data.DataSeeding
                 }
             }
 
-        }
+			if (context.DeliveryMethods.Count() == 0)
+			{
+				var deliveryData = File.ReadAllText("../Talabat.Repository/_Data/DataSeeding/delivery.json");
+				var deliveryies = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
+
+				if (deliveryies?.Count() > 0)
+				{
+					foreach (var delivery in deliveryies)
+					{
+						context.Set<DeliveryMethod>().Add(delivery);
+					}
+					await context.SaveChangesAsync();
+				}
+			}
+
+		}
     }
 }
