@@ -27,7 +27,7 @@ namespace Talabat.Repository.GenericRepository
                 return (IEnumerable<T>)await _context.Set<Products>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();
             return await _context.Set<T>().ToListAsync();
         }
-        public async Task<T?> GetASync(int id)
+        public async Task<T?> GetAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
@@ -49,12 +49,8 @@ namespace Talabat.Repository.GenericRepository
             return SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec);
         }
 
-		public Task<T?> GetAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Add(T entity)
+		
+		public void AddAsync(T entity)
             => _context.Set<T>().Add(entity);
         public void Update(T entity)
          => _context.Set<T>().Update(entity);

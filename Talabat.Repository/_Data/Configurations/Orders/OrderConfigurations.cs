@@ -23,10 +23,10 @@ namespace Talabat.Repository._Data.Configurations.Orders
 			builder.Property(order => order.SubTotal)
 				.HasColumnType("decimal(12,2)");
 
-			builder.HasOne(order => order.delivery)
+			builder.HasOne(order => order.DeliveryMethod)
 				.WithMany()
 				.OnDelete(DeleteBehavior.SetNull);
-			builder.HasMany(order => order.order)
+			builder.HasMany(order => order.OrderItem)
 				.WithOne()
 				.OnDelete(DeleteBehavior.Cascade);
 		}

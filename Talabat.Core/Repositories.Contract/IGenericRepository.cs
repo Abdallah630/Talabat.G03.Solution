@@ -16,7 +16,7 @@ namespace Talabat.Core.Repositories.Contract
 		Task<T?> GetWithSpecASync(ISpecifications<T> spec);
 		Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec);
 
-		void Add(T entity);
+		void AddAsync(T entity);
 		void Update(T entity);
 		void Delete(T entity);
 	}

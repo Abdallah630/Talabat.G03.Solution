@@ -22,7 +22,7 @@ namespace Talabat.Service.OrderService
 			_basketRepo = basketRepo;
 		}
 
-		public async Task<Order> GetOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+		public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
 		{
 			// 1.Get Basket From Baskets Repo
 			var basket = await _basketRepo.GetBasketAsync(basketId);
@@ -30,9 +30,10 @@ namespace Talabat.Service.OrderService
 			var orderItems = new List<OrderItem>();
 			if(basket?.Item?.Count > 0)
 			{
+				var productRepository = _unitOfWork.Repository<Products>();
 				foreach(var item in orderItems)
 				{
-					var product = await _unitOfWork.Repository<Products>().GetAsync(item.Id);
+					var product = await productRepository.GetAsync(item.Id);
 					var productItemOrder = new ProductItemOrder(product.Id,product.Name,product.PictureUrl);
 					var orderItem = new OrderItem(item.Quantity,product.Price, productItemOrder);
 					orderItems.Add(orderItem);
@@ -41,7 +42,9 @@ namespace Talabat.Service.OrderService
 			// 3. Calculate SubTotal
 			var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
 			// 4. Get Delivery Method From DeliveryMethods Repo
-			var deliveryMethod = _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
+			var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
+			if (deliveryMethod is null) return null;
+				
 			// 5. Create Order
 			var order = new Order(
 				shippingAddress: shippingAddress,
@@ -50,14 +53,14 @@ namespace Talabat.Service.OrderService
 				subTotal: subTotal,
 				buyerEmail: buyerEmail
 				);
-			 _unitOfWork.Repository<Order>().Add(order);
+			  _unitOfWork.Repository<Order>().AddAsync(order);
 			// 6. Save To Database [TODO]
 			var result = await _unitOfWork.CompleteAsync();
 			if (result <= 0) return null;
 			return order;
-		
 
-			
+				
+
 		}
 		public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodAsync()
 		{

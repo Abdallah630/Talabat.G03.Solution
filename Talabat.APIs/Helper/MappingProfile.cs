@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using StackExchange.Redis;
 using Talabat.APIs.Dto;
 using Talabat.Core.Module;
 using Talabat.Core.Module.Basket;
-using Talabat.Core.Module.Identity;
+using Talabat.Core.Module.OrderAggregate;
 using Talabat.Core.Module.Product;
 
 namespace Talabat.APIs.Helper
@@ -16,9 +17,9 @@ namespace Talabat.APIs.Helper
 				   p => p.MapFrom(p => p.Name))
 				.ForMember(p => p.Category, p => p.MapFrom(p => p.Name))
 				.ForMember(p => p.PictureUrl, p => p.MapFrom<ProductResolverPrecutUrl>());
-			CreateMap<BasketItem, BasketItemDto>();
-			CreateMap<CustomerBasket, CustomerBasketDto>();
-			CreateMap<Address, AddressDto>();
+			CreateMap<BasketItemDto, BasketItem>();
+			CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<AddressDto, Address>();
 
 		}
 	}

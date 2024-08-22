@@ -8,11 +8,13 @@ using System.Text;
 using Talabat.APIs.Error;
 using Talabat.APIs.Helper;
 using Talabat.APIs.MiddleWares;
+using Talabat.Core;
 using Talabat.Core.Module;
 using Talabat.Core.Module.Basket;
 using Talabat.Core.Module.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Service.Contract;
+using Talabat.Repository;
 using Talabat.Repository._Data.DataContext;
 using Talabat.Repository._Data.DataSeeding;
 using Talabat.Repository._Identity;
@@ -20,6 +22,7 @@ using Talabat.Repository._Identity.DataSeed;
 using Talabat.Repository.GenericRepository;
 using Talabat.Repository.Repositories.BasketRepository;
 using Talabat.Service.AuthService;
+using Talabat.Service.OrderService;
 
 namespace Talabat.APIs
 {
@@ -83,8 +86,10 @@ namespace Talabat.APIs
 					};
 					return new BadRequestObjectResult(response);
 				};
-				
 			});
+			
+			builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
+			builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			builder.Services.AddAutoMapper(typeof(MappingProfile));
 			builder.Services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));

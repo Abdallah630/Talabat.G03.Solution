@@ -3,17 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Talabat.Repository._Data.DataContext;
 
 #nullable disable
 
-namespace Talabat.Repository.DataContext.Migrations
+namespace Talabat.Repository._Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20240822140500_OrderModule")]
+    partial class OrderModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +64,9 @@ namespace Talabat.Repository.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("DeliveryMethodId")
+                        .HasColumnType("int");
+
                     b.Property<DateTimeOffset>("OrderDate")
                         .HasColumnType("datetimeoffset");
 
@@ -76,12 +81,9 @@ namespace Talabat.Repository.DataContext.Migrations
                     b.Property<decimal>("SubTotal")
                         .HasColumnType("decimal(12,2)");
 
-                    b.Property<int?>("deliveryId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("deliveryId");
+                    b.HasIndex("DeliveryMethodId");
 
                     b.ToTable("Orders");
                 });
@@ -185,9 +187,9 @@ namespace Talabat.Repository.DataContext.Migrations
 
             modelBuilder.Entity("Talabat.Core.Module.OrderAggregate.Order", b =>
                 {
-                    b.HasOne("Talabat.Core.Module.OrderAggregate.DeliveryMethod", "delivery")
+                    b.HasOne("Talabat.Core.Module.OrderAggregate.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
-                        .HasForeignKey("deliveryId")
+                        .HasForeignKey("DeliveryMethodId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("Talabat.Core.Module.OrderAggregate.Address", "ShippingAddress", b1 =>
@@ -195,23 +197,23 @@ namespace Talabat.Repository.DataContext.Migrations
                             b1.Property<int>("OrderId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
                             b1.Property<string>("Country")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("FName")
+                            b1.Property<string>("FirstName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("LName")
+                            b1.Property<string>("LastName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("city")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("street")
+                            b1.Property<string>("Street")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
@@ -223,16 +225,16 @@ namespace Talabat.Repository.DataContext.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
+                    b.Navigation("DeliveryMethod");
+
                     b.Navigation("ShippingAddress")
                         .IsRequired();
-
-                    b.Navigation("delivery");
                 });
 
             modelBuilder.Entity("Talabat.Core.Module.OrderAggregate.OrderItem", b =>
                 {
                     b.HasOne("Talabat.Core.Module.OrderAggregate.Order", null)
-                        .WithMany("order")
+                        .WithMany("OrderItem")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -285,7 +287,7 @@ namespace Talabat.Repository.DataContext.Migrations
 
             modelBuilder.Entity("Talabat.Core.Module.OrderAggregate.Order", b =>
                 {
-                    b.Navigation("order");
+                    b.Navigation("OrderItem");
                 });
 #pragma warning restore 612, 618
         }
