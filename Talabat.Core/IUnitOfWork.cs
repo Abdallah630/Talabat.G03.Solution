@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core.Module;
+using Talabat.Core.Repositories.Contract;
 
 namespace Talabat.Core
 {
-	internal interface IUnitOfWork
+	public interface IUnitOfWork : IAsyncDisposable
 	{
+		IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
+		Task<int> CompleteAsync();
+
 	}
 }

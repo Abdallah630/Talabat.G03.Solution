@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core.Module.OrderAggregate;
 
 namespace Talabat.Core.Service.Contract
 {
-	internal interface IOrderService
+	public interface IOrderService
 	{
+		Task<Order> GetOrderAsync(string buyerEmail,string basketId, int deliveryMethodId, Address shippingAddress);
+		Task<IReadOnlyList<Order>> GetOrderForUserAsync(string buyerEmail);
+		Task<Order> GetOrderByIdForUserAsync(string buyerEmail,int orderId);
+		Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodAsync();
 	}
 }

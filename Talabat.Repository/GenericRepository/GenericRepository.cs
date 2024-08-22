@@ -48,7 +48,20 @@ namespace Talabat.Repository.GenericRepository
         {
             return SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec);
         }
-    }
+
+		public Task<T?> GetAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Add(T entity)
+            => _context.Set<T>().Add(entity);
+        public void Update(T entity)
+         => _context.Set<T>().Update(entity);
+
+        public void Delete(T entity)
+         => _context.Set<T>().Remove(entity);
+	}
 
 
 }
