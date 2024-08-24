@@ -44,11 +44,15 @@ namespace Talabat.Repository.GenericRepository
         }
 
 
+		public Task<int> GetCountAsync(ISpecifications<T> spec)
+		{
+            return ApplySpecifications(spec).CountAsync();
+		}
+
         private IQueryable<T> ApplySpecifications(ISpecifications<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec);
         }
-
 		
 		public void AddAsync(T entity)
             => _context.Set<T>().Add(entity);
@@ -57,6 +61,7 @@ namespace Talabat.Repository.GenericRepository
 
         public void Delete(T entity)
          => _context.Set<T>().Remove(entity);
+
 	}
 
 

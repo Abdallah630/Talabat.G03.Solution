@@ -22,6 +22,13 @@ namespace Talabat.Repository
 			// 1.includeExpretions	
 			//	1.1 p=>p.Brand
 			//	1.2 p=>p.Category
+			if (spec.OrderBy is not null)
+				query = query.OrderBy(spec.OrderBy);
+			if(spec.OrderByDesc is not null)
+				query = query.OrderByDescending(spec.OrderByDesc);
+
+			if (spec.IsPaginationEnable)
+				query = query.Skip(spec.Skip).Take(spec.Take);
 
 			query = spec.includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
 
