@@ -9,8 +9,6 @@ using Talabat.APIs.Error;
 using Talabat.APIs.Helper;
 using Talabat.APIs.MiddleWares;
 using Talabat.Core;
-using Talabat.Core.Module;
-using Talabat.Core.Module.Basket;
 using Talabat.Core.Module.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Service.Contract;

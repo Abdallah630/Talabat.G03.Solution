@@ -32,13 +32,13 @@ namespace Talabat.Repository.GenericRepository
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
+        public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpecifications(spec).AsNoTracking().ToListAsync();
         }
 
 
-        public async Task<T?> GetWithSpecASync(ISpecifications<T> spec)
+        public async Task<T?> GetByIdWithSpecASync(ISpecifications<T> spec)
         {
             return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using StackExchange.Redis;
 using Talabat.APIs.Dto;
 using Talabat.Core.Module;
 using Talabat.Core.Module.Basket;
@@ -20,6 +19,14 @@ namespace Talabat.APIs.Helper
 			CreateMap<BasketItemDto, BasketItem>();
 			CreateMap<CustomerBasketDto, CustomerBasket>();
             CreateMap<AddressDto, Address>();
+			CreateMap<Order, OrderToReturnDto>()
+				.ForMember(o=>o.DeliveryMethod,s=>s.MapFrom(o=>o.DeliveryMethod.ShortName))
+				.ForMember(o=>o.DeliveryMethodCost, s=>s.MapFrom(o=>o.DeliveryMethod.Cost));
+			CreateMap<OrderItem, OrderItemDto>()
+				.ForMember(o=>o.ProductId,p=>p.MapFrom(o=>o.product.ProductId))
+				.ForMember(o=>o.ProductName,p=>p.MapFrom(o=>o.product.ProductName))
+				.ForMember(o=>o.PictureUrl,p=>p.MapFrom(o=>o.product.PictureUrl));
+				
 
 		}
 	}
