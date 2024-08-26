@@ -28,6 +28,8 @@ namespace Talabat.APIs
 	{
 		public static async Task Main(string[] args)
 		{
+
+			int x;
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
