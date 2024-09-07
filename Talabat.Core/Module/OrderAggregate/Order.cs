@@ -12,13 +12,14 @@ namespace Talabat.Core.Module.OrderAggregate
         {
             
         }
-        public Order(Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> order, decimal subTotal, string buyerEmail)
+        public Order(Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> order, decimal subTotal, string buyerEmail,string paymentIntentId)
 		{
 			ShippingAddress = shippingAddress;
 			DeliveryMethodId = deliveryMethodId;
 			OrderItem = order;
 			SubTotal = subTotal;
 			BuyerEmail = buyerEmail;
+            PaymentIntentId = paymentIntentId;
 		}
 
 		public string BuyerEmail { get; set; }
@@ -30,6 +31,6 @@ namespace Talabat.Core.Module.OrderAggregate
         public ICollection<OrderItem> OrderItem { get; set; } = new HashSet<OrderItem>();
         public decimal SubTotal { get; set; }
         public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
-        public string PaymentIntentId { get; set; } = string.Empty;
+        public string PaymentIntentId { get; set; } 
     }
 }

@@ -21,6 +21,7 @@ using Talabat.Repository.GenericRepository;
 using Talabat.Repository.Repositories.BasketRepository;
 using Talabat.Service.AuthService;
 using Talabat.Service.OrderService;
+using Talabat.Service.PaymentService;
 
 namespace Talabat.APIs
 {
@@ -28,8 +29,6 @@ namespace Talabat.APIs
 	{
 		public static async Task Main(string[] args)
 		{
-
-			int x;
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
@@ -87,7 +86,7 @@ namespace Talabat.APIs
 					return new BadRequestObjectResult(response);
 				};
 			});
-			
+			builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
 			builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
 			builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

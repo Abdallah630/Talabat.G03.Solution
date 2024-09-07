@@ -38,7 +38,7 @@ namespace Talabat.Repository.GenericRepository
         }
 
 
-        public async Task<T?> GetByIdWithSpecASync(ISpecifications<T> spec)
+        public async Task<T?> GetWithSpecASync(ISpecifications<T> spec)
         {
             return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }

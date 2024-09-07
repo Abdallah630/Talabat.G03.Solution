@@ -13,7 +13,7 @@ namespace Talabat.Core.Repositories.Contract
 		Task<T?> GetAsync(int id);
 		Task<IEnumerable<T>> GetAllAsync();
 
-		Task<T?> GetByIdWithSpecASync(ISpecifications<T> spec);
+		Task<T?> GetWithSpecASync(ISpecifications<T> spec);
 		Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec);
 		Task<int> GetCountAsync(ISpecifications<T> spec);
 		void AddAsync(T entity);
