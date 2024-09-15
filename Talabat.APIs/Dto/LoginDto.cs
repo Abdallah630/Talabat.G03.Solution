@@ -6,9 +6,9 @@ namespace Talabat.APIs.Dto
 	{
 		[Required]
 		[EmailAddress]
-		public string Email { get; set; }
+		public string email { get; set; }
 		[Required]
 		//[DataType(DataType.Password)] // HashingPassword
-		public string Passwrod { get; set; } 
+		public string password { get; set; } 
 	}
 }

@@ -14,7 +14,7 @@ namespace Talabat.APIs.Helper
 			{
 				return $"{"https://localhost:7258"}/{source.PictureUrl}";
 			}
-
+			
 			return string.Empty;
 		}
 	}

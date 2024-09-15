@@ -21,10 +21,10 @@ namespace Talabat.Repository.GenericRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Products))
-                return (IEnumerable<T>)await _context.Set<Products>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+                return (IReadOnlyList<T>)await _context.Set<Products>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();
             return await _context.Set<T>().ToListAsync();
         }
         public async Task<T?> GetAsync(int id)
@@ -62,6 +62,7 @@ namespace Talabat.Repository.GenericRepository
         public void Delete(T entity)
          => _context.Set<T>().Remove(entity);
 
+	
 	}
 
 

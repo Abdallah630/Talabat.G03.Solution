@@ -9,9 +9,9 @@ using Talabat.Core.Module.OrderAggregate;
 
 namespace Talabat.Repository._Data.Configurations.Orders
 {
-	internal class OrderItemConfigurations : IEntityTypeConfiguration<OrderItem>
+	internal class OrderItemConfigurations : IEntityTypeConfiguration<ProductItemOrder>
 	{
-		public void Configure(EntityTypeBuilder<OrderItem> builder)
+		public void Configure(EntityTypeBuilder<ProductItemOrder> builder)
 		{
 			builder.OwnsOne(order => order.product, product => product.WithOwner());
 			builder.Property(order => order.Price)

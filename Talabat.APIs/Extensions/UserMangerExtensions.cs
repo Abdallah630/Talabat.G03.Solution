@@ -7,7 +7,7 @@ namespace Talabat.APIs.Extensions
 {
 	public static class UserMangerExtensions
 	{
-		public static async Task<ApplicationUser?> FindByEmailAsync(this UserManager<ApplicationUser> userManager,ClaimsPrincipal User)
+		public static async Task<ApplicationUser?> FindUserByEmailAsync(this UserManager<ApplicationUser> userManager,ClaimsPrincipal User)
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var user = await userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper());

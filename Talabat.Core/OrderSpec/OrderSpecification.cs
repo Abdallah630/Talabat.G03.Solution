@@ -14,7 +14,7 @@ namespace Talabat.Core.OrderSpec
             :base(o=>o.BuyerEmail == buyerEmail) 
         {
             includes.Add(o => o.DeliveryMethod);
-            includes.Add(o => o.OrderItem);
+            includes.Add(o => o.Items);
             
         }
 
@@ -22,7 +22,7 @@ namespace Talabat.Core.OrderSpec
             : base(o=>o.Id == id && o.BuyerEmail == buyerEmail)
         {
             includes.Add(o => o.DeliveryMethod);
-            includes.Add(o => o.OrderItem);
+            includes.Add(o => o.Items);
         }
     }
 }

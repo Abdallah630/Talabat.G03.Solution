@@ -8,6 +8,7 @@ using Talabat.APIs.Dto;
 using Talabat.APIs.Error;
 using Talabat.APIs.Extensions;
 using Talabat.Core.Module.Identity;
+using Talabat.Core.Module.OrderAggregate;
 using Talabat.Core.Service.Contract;
 
 namespace Talabat.APIs.Controllers
@@ -29,20 +30,20 @@ namespace Talabat.APIs.Controllers
 		}
 
 
-		[HttpPost("Login")]
+		[HttpPost("login")]
 		public async Task<ActionResult<UserDto>> Login(LoginDto model)
 		{
-			var user = await _userManger.FindByEmailAsync(model.Email);
+			var user = await _userManger.FindByEmailAsync(model.email);
 			if (user is null) return Unauthorized(new ApiResponse(401, "Invalid Login"));
 
-			var result = await _signInManger.CheckPasswordSignInAsync(user, model.Passwrod, false);
+			var result = await _signInManger.CheckPasswordSignInAsync(user, model.password, false);
 			if (!result.Succeeded) return Unauthorized(new ApiResponse(401, "Invalid Login"));
 
 			return Ok(new UserDto
 			{
-				DisplayName = user.DisplayName,
-				Email = user.Email,
-				Token = await _authService.CreateTokenAsync(user, _userManger)
+				displayName = user.DisplayName,
+				email = user.Email,
+				token = await _authService.CreateTokenAsync(user, _userManger)
 			});
 		}
 
@@ -61,9 +62,9 @@ namespace Talabat.APIs.Controllers
 			if (!result.Succeeded) return BadRequest(new ApiValidationResponse() { Errors = result.Errors.Select(p => p.Description) });
 			return Ok(new UserDto()
 			{
-				DisplayName = user.DisplayName,
-				Email = user.Email,
-				Token = await _authService.CreateTokenAsync(user, _userManger)
+				displayName = user.DisplayName,
+				email = user.Email,
+				token = await _authService.CreateTokenAsync(user, _userManger)
 			});
 		}
 
@@ -76,21 +77,32 @@ namespace Talabat.APIs.Controllers
 
 			return Ok(new UserDto
 			{
-				DisplayName = user.DisplayName,
-				Email = user.Email,
-				Token = await _authService.CreateTokenAsync(user, _userManger)
+				displayName = user.DisplayName,
+				email = user.Email,
+				token = await _authService.CreateTokenAsync(user, _userManger)
 			});
 		}
 
 		[Authorize]
-		[HttpGet("Address")]
-		public async Task<ActionResult<AddressDto>> GetAddressUser()
+		[HttpGet("address")] 
+		public async Task<ActionResult<AddressDto>> GetUserAddress()
 		{
-			var user = await _userManger.FindByEmailAsync(User);
+			var user = await _userManger.FindUserByEmailAsync(User);
 
-			return Ok(_mapper.Map<AddressDto>(user?.Address));
+			return Ok(_mapper.Map<AddressDto>(user.Address));
 		}
 
-
+		[Authorize]
+		[HttpPut("address")]
+		public async Task<ActionResult<Address>> UpdateUserAddress(AddressDto address)
+		{
+			var updateAddress = _mapper.Map<AddressDto,Address>(address);
+			var user = await _userManger.FindUserByEmailAsync(User);
+			updateAddress.Id = user.Address.Id;
+			user.Address = updateAddress;
+			var result = await _userManger.UpdateAsync(user);
+			if (!result.Succeeded) return BadRequest(new ApiValidationResponse() { Errors = result.Errors.Select(e=>e.Description)});
+			return Ok(address);
+		}
 	}
 }

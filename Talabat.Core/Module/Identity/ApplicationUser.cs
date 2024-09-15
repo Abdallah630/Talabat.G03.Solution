@@ -9,7 +9,7 @@ namespace Talabat.Core.Module.Identity
 {
 	public class ApplicationUser : IdentityUser
 	{
-        public string DisplayName { get; set; } = null!;
+        public string? DisplayName { get; set; }
         public Address? Address { get; set; }
 
     }

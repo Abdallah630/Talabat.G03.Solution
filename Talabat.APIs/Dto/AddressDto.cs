@@ -5,15 +5,15 @@ namespace Talabat.APIs.Dto
 	public class AddressDto
 	{
 		[Required]
-		public string FirstName { get; set; }
+		public string firstName { get; set; }
 		[Required]
-		public string LastName { get; set; }
+		public string lastName { get; set; }
 		[Required]
-		public string Street { get; set; }
+		public string street { get; set; } 
 		[Required]
-		public string City { get; set; }
+		public string city { get; set; } 
 		[Required]
-		public string Country { get; set; }
+		public string country { get; set; } 
 	}
 
 }

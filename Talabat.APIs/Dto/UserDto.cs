@@ -4,8 +4,8 @@ namespace Talabat.APIs.Dto
 {
 	public class UserDto
 	{
-        public string DisplayName { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string Token { get; set; } = null!;
+        public string email { get; set; } = null!;
+        public string displayName { get; set; } = null!;
+        public string token { get; set; } = null!;
     }
 }

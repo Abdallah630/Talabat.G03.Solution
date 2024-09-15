@@ -22,11 +22,11 @@ namespace Talabat.Repository._Identity.DataSeed
 					PhoneNumber = "01238745322",
 					Address = new Address
 					{
-						FName = "Abdallah",
-						LName = "Saad",
-						street = "Ayhaga",
-						city = "Cairo",
-						country = "Egypt",
+						FirstName = "Abdallah",
+						LastName = "Saad",
+						Street = "213",
+						City = "Cairo",
+						Country = "Egypt",
 					}
 				}; 
 				await applicationUser.CreateAsync(user,"P@ssw0rd1234");

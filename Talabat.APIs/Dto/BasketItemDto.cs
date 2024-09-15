@@ -4,20 +4,20 @@ namespace Talabat.APIs.Dto
 {
 	public class BasketItemDto
 	{
-		public int Id { get; set; }
+		public int id { get; set; }
 		[Required]
-		public string Name { get; set; }
-		[Required]
-		public string PictureUrl { get; set; }
+		public string productName { get; set; }															
 		[Required]
 		[Range(0.1,double.MaxValue,ErrorMessage = "Price must by greater than zero.")]
-		public decimal Price { get; set; }
+		public decimal price { get; set; }
 		[Required]
 		[Range(1,int.MaxValue,ErrorMessage= "Quantity must by greater than zero.")]
-		public int Quantity { get; set; }
+		public int quantity { get; set; }
 		[Required]
-		public string Category { get; set; }
+		public string pictureUrl { get; set; }
 		[Required]
-		public string Brand { get; set; }
+		public string brand { get; set; }
+		[Required]
+		public string category { get; set; }
 	}
 }

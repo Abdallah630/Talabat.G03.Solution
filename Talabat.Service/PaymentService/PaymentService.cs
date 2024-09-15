@@ -11,6 +11,7 @@ using Talabat.Core;
 using Talabat.Core.Module;
 using Talabat.Core.Module.Basket;
 using Talabat.Core.Module.OrderAggregate;
+using Talabat.Core.OrderSpec;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Service.Contract;
 
@@ -34,10 +35,10 @@ namespace Talabat.Service.PaymentService
 			StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
 			var basket = await _basketRepo.GetBasketAsync(basketId);
 			if (basket is null) return null;
-			if(basket.Item.Count > 0)
+			if(basket.items.Count > 0)
 			{
 				var productRepo = _unitOfWork.Repository<Products>();
-				foreach (var item in basket.Item)
+				foreach (var item in basket.items)
 				{
 					var product = await productRepo.GetAsync(item.Id);
 					if(item.Price != product.Price)
@@ -60,7 +61,7 @@ namespace Talabat.Service.PaymentService
 			{
 				var options = new PaymentIntentCreateOptions()
 				{
-					Amount = (long)basket.Item.Sum(item => item.Price*100 * item.Quantity) + (long)shippingPrice * 100,
+					Amount = (long)basket.items.Sum(item => item.Price*100 * item.Quantity) + (long)shippingPrice * 100,
 					Currency = "usd",
 					PaymentMethodTypes = new List<string>() {"card"}
 				};
@@ -73,14 +74,31 @@ namespace Talabat.Service.PaymentService
 			{
 				var options = new PaymentIntentUpdateOptions()
 				{
-					Amount = (long)basket.Item.Sum(item => item.Price * 100 * item.Quantity) + (long)shippingPrice * 100,
+					Amount = (long)basket.items.Sum(item => item.Price * 100 * item.Quantity) + (long)shippingPrice * 100,
 				};
 
 				await paymentIntentService.UpdateAsync(basket.PaymentIntentId, options);
 			}
 
-			await _basketRepo.UpdateOrCreateAsync(basket);
+			await _basketRepo.UpdateAsync(basket);
 			return basket;
+		}
+
+		public async Task<Order?> UpdateOrderStatus(string paymentIntentId, bool isPaid)
+		{
+			var orderRepo = _unitOfWork.Repository<Order>();
+			var spec = new OrderWithPaymentIntentSpecification(paymentIntentId);
+			var order = await orderRepo.GetWithSpecASync(spec);
+			if (order is null) return null;
+			if (isPaid)
+				order.Status = OrderStatus.PaymantReceived;
+			else
+				order.Status = OrderStatus.PaymantFailed;
+			orderRepo.Update(order);
+
+			await _unitOfWork.CompleteAsync();
+			return order;
 		}
 	}
 }
+ 

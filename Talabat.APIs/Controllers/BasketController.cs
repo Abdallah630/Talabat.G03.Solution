@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dto;
+using Talabat.APIs.Error;
 using Talabat.Core.Module.Basket;
 using Talabat.Core.Repositories.Contract;
 
@@ -21,24 +22,25 @@ namespace Talabat.APIs.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<CustomerBasket>> GetBasket(string basketId)
+		public async Task<ActionResult<CustomerBasket>> GetBasket(string id)
 		{
-			var basket =  await _basketRepository.GetBasketAsync(basketId);
-			return Ok(basket);
+			var basket =  await _basketRepository.GetBasketAsync(id);
+			return Ok(basket is null ? new CustomerBasket(id): basket);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<CustomerBasket>> UpdateOrCreateBasket(CustomerBasketDto basket)
+		public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basket)
 		{
-			var basketDto = _mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
-			var updatedOrCreated = await _basketRepository.UpdateOrCreateAsync(basketDto);
-			return Ok(updatedOrCreated);
+			var mappedBasket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
+			var createOrUpdateBasket = await _basketRepository.UpdateAsync(mappedBasket);
+			if (createOrUpdateBasket is null) return BadRequest(new ApiResponse(400));
+			return Ok(createOrUpdateBasket);
 		}
 
 		[HttpDelete]
-		public async Task<bool> DeleteBasket(string basketId)
+		public async Task<bool> DeleteBasket(string id)
 		{
-			return await _basketRepository.DeleteBasketAsync(basketId);
+			return await _basketRepository.DeleteBasketAsync(id);
 		}
 
 	}

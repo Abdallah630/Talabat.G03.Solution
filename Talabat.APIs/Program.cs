@@ -22,6 +22,7 @@ using Talabat.Repository.Repositories.BasketRepository;
 using Talabat.Service.AuthService;
 using Talabat.Service.OrderService;
 using Talabat.Service.PaymentService;
+using Talabat.Service.ProductService;
 
 namespace Talabat.APIs
 {
@@ -86,6 +87,14 @@ namespace Talabat.APIs
 					return new BadRequestObjectResult(response);
 				};
 			});
+			builder.Services.AddCors(option => 
+			{
+				option.AddPolicy("MyPolicy", policyOption => 
+				{
+					policyOption.AllowAnyHeader().AllowAnyMethod().WithOrigins(builder.Configuration["FrontBaseUrl"]);
+				});
+			});
+			builder.Services.AddScoped(typeof(IProductService), typeof(ProductService));
 			builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
 			builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
 			builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
@@ -130,6 +139,7 @@ namespace Talabat.APIs
 			app.UseAuthentication();
 			app.UseAuthorization();
 			app.UseStaticFiles();
+			app.UseCors("MyPolicy"); 
 			app.UseMiddleware<ExceptionMiddleWare>();
 			app.MapControllers(); 
 			#endregion

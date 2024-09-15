@@ -27,7 +27,7 @@ namespace Talabat.Repository.Repositories.BasketRepository
 			return basket.IsNullOrEmpty? null: JsonSerializer.Deserialize<CustomerBasket?>(basket);
 		}
 
-		public async Task<CustomerBasket?> UpdateOrCreateAsync(CustomerBasket basket)
+		public async Task<CustomerBasket?> UpdateAsync(CustomerBasket basket)
 		{
 			var createOrUpdate = await _dataBase.StringSetAsync(basket.Id,JsonSerializer.Serialize(basket),TimeSpan.FromDays(30));
 			if (!createOrUpdate) return null;

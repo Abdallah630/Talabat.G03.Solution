@@ -13,7 +13,6 @@ namespace Talabat.Core.OrderSpec
         public OrderWithPaymentIntentSpecification(string? paymentIntentId)
             :base(o=>o.PaymentIntentId == paymentIntentId)
         {
-            
         }
     }
 }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Talabat.Core.Module.OrderAggregate
 {
-	public class OrderItem : BaseEntity
+	public class ProductItemOrder : BaseEntity
 	{
-        private OrderItem()
+        private ProductItemOrder()
         {
             
         }
-        public OrderItem(int quantity, decimal price, ProductItemOrder product)
+        public ProductItemOrder(int quantity, decimal price, ProductItemOrder product)
 		{
 			Quantity = quantity;
 			Price = price;

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Talabat.Core.Module.OrderAggregate
 {
-	public class Address
+	public class Addresses
 	{
-		public Address() 
+		public Addresses() 
 		{
 		}
-		public Address(string firstName, string lastName, string street, string city, string country)
+		public Addresses(string firstName, string lastName, string street, string city, string country)
 		{
 			FirstName = firstName;
 			LastName = lastName;

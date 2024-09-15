@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core.Module.Identity;
 
 namespace Talabat.Core.Module.OrderAggregate
 {
@@ -12,11 +13,11 @@ namespace Talabat.Core.Module.OrderAggregate
         {
             
         }
-        public Order(Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> order, decimal subTotal, string buyerEmail,string paymentIntentId)
+        public Order(string buyerEmail, Addresses shippingAddress, int? deliveryMethodId, ICollection<ProductItemOrder> order, decimal subTotal, string paymentIntentId)
 		{
 			ShippingAddress = shippingAddress;
 			DeliveryMethodId = deliveryMethodId;
-			OrderItem = order;
+			Items = order;
 			SubTotal = subTotal;
 			BuyerEmail = buyerEmail;
             PaymentIntentId = paymentIntentId;
@@ -25,10 +26,10 @@ namespace Talabat.Core.Module.OrderAggregate
 		public string BuyerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public Address ShippingAddress { get; set; }
+        public Addresses ShippingAddress { get; set; }
         public DeliveryMethod? DeliveryMethod { get; set; }
         public int? DeliveryMethodId { get; set; }
-        public ICollection<OrderItem> OrderItem { get; set; } = new HashSet<OrderItem>();
+        public ICollection<ProductItemOrder> Items { get; set; } = new HashSet<ProductItemOrder>();
         public decimal SubTotal { get; set; }
         public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
         public string PaymentIntentId { get; set; } 

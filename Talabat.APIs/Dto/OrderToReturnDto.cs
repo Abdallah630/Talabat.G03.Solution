@@ -8,13 +8,13 @@ namespace Talabat.APIs.Dto
         public int Id { get; set; }
         public string BuyerEmail { get; set; }
 		public DateTimeOffset OrderDate { get; set; } 
-		public string Status { get; set; }
-		public Address ShippingAddress { get; set; }
+		public Addresses ShippingAddress { get; set; }
 		public string DeliveryMethod { get; set; }
         public string DeliveryMethodCost { get; set; }
-        public ICollection<OrderItemDto> OrderItem { get; set; } = new HashSet<OrderItemDto>();
+        public ICollection<OrderItemDto> Items { get; set; } = new HashSet<OrderItemDto>();
 		public decimal SubTotal { get; set; }
-		public decimal Total {  get; set; } 
-		public string PaymentIntentId { get; set; } = string.Empty;
+		public string Status { get; set; }
+		public decimal Total {  get; set; }
+		public string PaymentIntentId { get; set; }
 	}
 }

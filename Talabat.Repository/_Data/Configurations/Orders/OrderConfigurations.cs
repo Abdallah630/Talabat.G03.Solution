@@ -26,7 +26,7 @@ namespace Talabat.Repository._Data.Configurations.Orders
 			builder.HasOne(order => order.DeliveryMethod)
 				.WithMany()
 				.OnDelete(DeleteBehavior.SetNull);
-			builder.HasMany(order => order.OrderItem)
+			builder.HasMany(order => order.Items)
 				.WithOne()
 				.OnDelete(DeleteBehavior.Cascade);
 		}

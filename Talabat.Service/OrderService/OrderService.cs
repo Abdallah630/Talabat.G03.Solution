@@ -25,19 +25,19 @@ namespace Talabat.Service.OrderService
 			_paymentService = paymentService;
 		}
 
-		public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+		public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Addresses shippingAddress)
 		{
 			// 1.Get Basket From Baskets Repo
 			var basket = await _basketRepo.GetBasketAsync(basketId);
 			// 2. Get Selected Items at Basket From Products Repo
-			var orderItems = new List<OrderItem>();
-			if(basket?.Item?.Count > 0)
+			var orderItems = new List<ProductItemOrder>();
+			if(basket?.items?.Count > 0)
 			{
-				foreach(var item in basket.Item)
+				foreach(var item in basket.items)
 				{
 					var product = await _unitOfWork.Repository<Products>().GetAsync(item.Id);
 					var productItemOrder = new ProductItemOrder(item.Id,product.Name,product.PictureUrl);
-					var orderItem = new OrderItem(item.Quantity,product.Price, productItemOrder);
+					var orderItem = new ProductItemOrder(item.Quantity,product.Price, productItemOrder);
 					orderItems.Add(orderItem);
 				}
 			}
@@ -56,7 +56,7 @@ namespace Talabat.Service.OrderService
 				await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 			}
 			// 5. Create Order
-			var order = new Order(shippingAddress,deliveryMethodId,orderItems,subTotal,buyerEmail,basket.PaymentIntentId);
+			var order = new Order(buyerEmail, shippingAddress,deliveryMethodId,orderItems,subTotal,basket.PaymentIntentId);
 			  orderRepo.AddAsync(order);
 			// 6. Save To Database [TODO]
 			var result = await _unitOfWork.CompleteAsync();
@@ -80,7 +80,7 @@ namespace Talabat.Service.OrderService
 		}
 
 
-		public async Task<Order?> GetOrderByIdForUserAsync(int orderId, string buyerEmail )
+		public async Task<Order?> GetOrderByIdForUserAsync(string buyerEmail,int orderId)
 		{
 			var orderRepo = _unitOfWork.Repository<Order>();
 			var spec = new OrderSpecification(orderId,buyerEmail);
