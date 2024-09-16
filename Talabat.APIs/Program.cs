@@ -20,6 +20,7 @@ using Talabat.Repository._Identity.DataSeed;
 using Talabat.Repository.GenericRepository;
 using Talabat.Repository.Repositories.BasketRepository;
 using Talabat.Service.AuthService;
+using Talabat.Service.CacheService;
 using Talabat.Service.OrderService;
 using Talabat.Service.PaymentService;
 using Talabat.Service.ProductService;
@@ -49,7 +50,7 @@ namespace Talabat.APIs
 			});
 
 			builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
-			builder.Services.AddScoped<IConnectionMultiplexer>(serverProvider =>
+			builder.Services.AddSingleton<IConnectionMultiplexer>(serverProvider =>
 			{
 				var connection = builder.Configuration.GetConnectionString("Redis");
 				return ConnectionMultiplexer.Connect(connection);
@@ -94,6 +95,7 @@ namespace Talabat.APIs
 					policyOption.AllowAnyHeader().AllowAnyMethod().WithOrigins(builder.Configuration["FrontBaseUrl"]);
 				});
 			});
+			builder.Services.AddSingleton(typeof(IResponseCacheService), typeof(ResponseCacheService));
 			builder.Services.AddScoped(typeof(IProductService), typeof(ProductService));
 			builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
 			builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
